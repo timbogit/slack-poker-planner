@@ -18,6 +18,18 @@ export interface ISession {
    */
   workId: string;
   /**
+   * Details of the GUS work item.
+   */
+  details: string;
+  /**
+   * Sprint of the GUS work item.
+   */
+  sprint: string;
+  /**
+   * Name (eg: W-8989148) of the GUS work item.
+   */
+  name: string;
+  /**
    * Slack Channel ID.
    */
   channelId: string;

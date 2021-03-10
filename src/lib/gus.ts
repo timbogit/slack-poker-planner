@@ -1,4 +1,5 @@
 import logger from './logger';
+import TurndownService from 'turndown';
 
 const jsforce = require('jsforce');
 
@@ -14,6 +15,10 @@ export function new_connection(token:string) {
     });
 }
 
+export function url(name: string, workId: string): string {
+  return `<${client.instanceUrl}/${workId}|${name}>`;
+}
+
 let client = new_connection(access_token);
 
 export function getConnection() {
@@ -27,14 +32,17 @@ export function update_client(access_token:string) {
 
 export interface IGusRecord {
   Id: string;
+  Details__c: string;
+  Name: string;
   Subject__c: string;
+  Sprint_Name__c: string;
 }
 
 export async function getRecord(title: string, connection = getConnection()): Promise<IGusRecord> {
   let record: IGusRecord;
 
   logger.info(`Connection is ${connection}, with access token ${connection.accessToken}`);
-  await connection.query(`SELECT Id, Subject__c FROM ADM_Work__c WHERE Name='${title}'`,
+  await connection.query(`SELECT Id, Subject__c, Details__c, Sprint_Name__c, Name FROM ADM_Work__c WHERE Name='${title}'`,
     function(err: any, result: any) {
       if (err) {
         return logger.error(err);
@@ -48,7 +56,11 @@ export async function getRecord(title: string, connection = getConnection()): Pr
         logger.info("next records URL : " + result.nextRecordsUrl);
       }
       logger.info(result.records[0]);
+
       record = <IGusRecord> result.records[0];
+
+      // strip html tag and convert it to markdown
+      record.Details__c = new TurndownService().turndown(record.Details__c);
     }
   );
   return record;
