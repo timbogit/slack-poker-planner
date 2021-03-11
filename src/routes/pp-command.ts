@@ -279,15 +279,12 @@ export class PPCommandRoute {
    * `/pp config ...`
    */
   static async configure(parts: Array<string>, res: express.Response) {
-
     let input_token: string = parts[0];
-    logger.info(`Input token is |||${input_token}|||`);
 
     gus.update_client(input_token);
 
     return res.json({
-      text: `Updated the GUS user credentials, new token is ${gus.getConnection().accessToken}`,
-        // `Updated the GUS user credentials, new token is ${token}`,
+      text: `Updated the GUS user credentials, new token is ...${gus.getConnection().accessToken.slice(-10)}`,
       response_type: 'ephemeral',
       replace_original: false,
     });
