@@ -26,7 +26,7 @@ export function getConnection() {
 }
 
 export function update_client(access_token:string) {
-  logger.info(`in update_client: with access token ${access_token}`);
+  logger.info(`in update_client: with access token ...${access_token.slice(-10)}`);
   client = new_connection(access_token);
 }
 
@@ -41,7 +41,7 @@ export interface IGusRecord {
 export async function getRecord(title: string, connection = getConnection()): Promise<IGusRecord> {
   let record: IGusRecord;
 
-  logger.info(`Connection is ${connection}, with access token ${connection.accessToken}`);
+  logger.info(`Connection is ${connection}, with access token ...${connection.accessToken.slice(-10)}`);
   await connection.query(`SELECT Id, Subject__c, Details__c, Sprint_Name__c, Name FROM ADM_Work__c WHERE Name='${title}'`,
     function(err: any, result: any) {
       if (err) {
